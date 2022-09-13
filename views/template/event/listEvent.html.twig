@@ -1,0 +1,94 @@
+{% extends "../../main.html.twig" %}
+
+
+{% block stylesheets %}
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link
+	rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+	<!-- Ces deux balises link sont à insérer entre les deux balises existantes -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css"/>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css"/>
+
+	<link href="/main.css" rel="stylesheet">
+{% endblock %}
+
+{% block main %}
+	<main>
+		<section class="card col-12 col-md-6 col-lg-6 mt-3 mb-3 bg-light container p-0">
+			<h2 class="card-title m-0 p-1">Actualitées</h2>
+			<hr class="mt-0">
+			{% for userEvent in listUser %}
+				{% for event in userEvent.eventUser %}
+					<article class="row card-body border border-muted rounded m-2 p-2" id="{{event._id}}">
+						<div class="col-6 d-flex flex-column justify-content-between p-2">
+							<div class=" d-flex  flex-column">
+								{% if not userEvent.picture %}
+									<a href="/profil/{{userEvent._id}}" class="col-10 p-1"><img class="col-12 rounded-circle" src="../pictures/default.jpg" class="card-img-top"/></a>
+								{% else %}
+									<a href="/profil/{{userEvent._id}}" class="col-10 p-1"><img class="col-12 rounded-circle" src="/images/userImages/{{userEvent.id}}/{{userEvent.picture}}" alt="image de profil" class="card-img-top"/></a>
+								{% endif %}
+								<div>
+									<h6 class="card-title">{{userEvent.pseudo}}</h6>
+									<p class="card-subtitle mb-2 text-muted">{{userEvent.motoUser[0].brand}}
+										{{userEvent.motoUser[0].model}}
+										{{userEvent.motoUser[0].cylinder}}</p>
+								</div>
+							</div>
+							<h5 style="color:#2b3658;" class=" m-0">{{event.mySteps[0].stepCity}}</h5>
+							<h5 style="color:#2b3658;" class=" m-0">{{event.mySteps[event.mySteps.length - 1].stepCity}}</h5>
+							<p class="m-0 text-secondary">&#x1F552; Du
+								{{event.startDate|date("d/m/Y")}}
+								au
+								{{event.endDate|date("d/m/Y")}}</p>
+							<!-- pour configurer le format de la date -->
+							<p class="text-success m-0">Rider
+								{{event.riderJoin.length}}+</p>
+						</div>
+						<div class="col-6 p-2">
+							<div class="myCards ">
+								{% for stepDetail in event.mySteps %}
+									<input type="hidden" class="stepsLat" value="{{stepDetail.stepLat}}">
+									<input type="hidden" class="stepsLon" value="{{stepDetail.stepLon}}">
+								{% endfor %}
+							</div>
+							<div class="d-flex flex-column flex-md-row justify-content-md-between align-items-md-center">
+								{# Verifie si l'utilisateur participe à la sortie ou non #}
+								{% set iParticipate = false %}
+								{% for idRider in event.riderJoin %}
+									{% if idRider == user._id %}
+										{% set iParticipate = true %}
+									{% endif %}
+								{% endfor %}
+								{% if event._id == user._id %}
+									<p class="text-danger">{{userEvent._id}}
+									</p>
+									<p>{{user._id}}</p>
+								{% endif %}
+								{% if event.riderJoin.length == 0 %}
+									<a href="/rejoindreEvenement/{{event._id}}/{{userEvent._id}}/{{user._id}}" class="btn btn-primary">Je participe</a>
+								{% elseif iParticipate %}
+									<a href="/annulerParticipation/{{event._id}}/{{userEvent._id}}/{{user._id}}" class="btn btn-danger">Annuler</a>
+								{% else %}
+									<a href="/rejoindreEvenement/{{event._id}}/{{userEvent._id}}/{{user._id}}" class="btn btn-primary">Je participe</a>
+								{% endif %}
+								<a href="/evenement/{{event._id}}/{{userEvent._id}}" class="btn btn-light">Détails</a>
+							</div>
+						</div>
+					</article>
+				{% endfor %}
+			{% endfor %}
+		</section>
+	</main>
+
+
+	<!-- Fichier JS -->
+	<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+
+
+	<!-- Ces deux balises script sont à insérer entre les deux balises existantes -->
+	<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+	<script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+
+	<script src="/js/openStreetMap/listEvent.js"></script>
+
+{% endblock %}

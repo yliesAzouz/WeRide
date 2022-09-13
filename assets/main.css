@@ -1,0 +1,23 @@
+html{
+    scroll-behavior: unset !important;
+}
+
+.header {
+    background-color:#3ECF67;
+}
+
+body {
+    background: url('./pictures/bg.webp') !important;
+    background-size: cover !important;
+    position: top !important;
+    background-attachment: fixed !important;
+     background-repeat: no-repeat !important;
+}
+
+
+/*----------------------------change la première lettre en majuscule -------------------------- */
+h1 , h6 , h5:first-letter{
+    text-transform: capitalize
+}
+
+
