@@ -2,9 +2,9 @@ import mongoose from "mongoose"
 import { MotoController } from "../controllers/motoController.js"
 import Moto from "../models/modelMoto.js"
 import User from "../models/modelUser.js"
-import { Config } from "../Config.js"
+import dotenv from 'dotenv/config'
 import { UserController } from "../controllers/userController.js"
-const db = "mongodb+srv://" + Config.dbUserName + ":" + Config.dbPassword + "@" + Config.dbClusterName + "/" + Config.dbTestName + "?retryWrites=true&w=majority"
+const db = "mongodb+srv://" + process.env.dbUserName + ":" + process.env.dbPassword + "@" + process.env.dbClusterName + "/" + process.env.dbTestName + "?retryWrites=true&w=majority"
 
 beforeEach(async () => {
     await User.deleteMany()
